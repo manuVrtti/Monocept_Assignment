@@ -23,7 +23,7 @@ public class NumberGuesserGame {
 
                 int guess = 0;
 
-                // -------- INPUT VALIDATION LOOP --------
+                // -------- Suyash_Gupta --------
                 while (true) {
 
                     System.out.print("Enter your guess (1-100): ");
@@ -65,7 +65,7 @@ public class NumberGuesserGame {
                 System.out.println("Game Over! Correct number was: " + randomNumber);
             }
 
-            // -------- EXIT / CONTINUE VALIDATION --------
+            
             while (true) {
 
                 System.out.print("\nEnter choice (1 = Continue, 2 = Exit): ");
@@ -92,4 +92,5 @@ public class NumberGuesserGame {
             }
         }
     }
+
 }
