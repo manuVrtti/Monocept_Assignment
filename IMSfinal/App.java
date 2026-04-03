@@ -26,13 +26,13 @@ class App {
         }
     }
 
-    // 🔥 COMMON SAFE INPUT METHOD
+
     int getInt() {
         while (true) {
             try {
                 return Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
-                System.out.print("❌ Invalid number, re-enter: ");
+                System.out.print(" Invalid number, re-enter: ");
             }
         }
     }
@@ -42,12 +42,12 @@ class App {
             try {
                 return Double.parseDouble(sc.nextLine());
             } catch (Exception e) {
-                System.out.print("❌ Invalid number, re-enter: ");
+                System.out.print(" Invalid number, re-enter: ");
             }
         }
     }
 
-    // 🔥 ADD PRODUCT (SMART LOGIC)
+   
     void addProduct() {
 
         System.out.print("Enter ID: ");
@@ -55,18 +55,18 @@ class App {
 
         Product existing = service.find(id);
 
-        // 👉 IF PRODUCT EXISTS
+        
         if (existing != null) {
             System.out.println("⚠ Product already exists: " + existing.name);
             System.out.print("Enter quantity to add: ");
             int qty = getInt();
 
             existing.quantity += qty;
-            System.out.println("✅ Quantity updated! New stock: " + existing.quantity);
+            System.out.println(" Quantity updated! New stock: " + existing.quantity);
             return;
         }
 
-        // 👉 NEW PRODUCT
+       
         System.out.print("Enter Name: ");
         String name = sc.nextLine();
 
@@ -82,7 +82,7 @@ class App {
         service.addProduct(new Product(id, name, qty, th, price));
     }
 
-    // 🔥 REMOVE STOCK (SMART VALIDATION)
+  
     void removeStock() {
 
         while (true) {
@@ -92,9 +92,9 @@ class App {
 
             Product p = service.find(id);
 
-            // ❌ INVALID ID
+           
             if (p == null) {
-                System.out.println("❌ Invalid Product ID: " + id);
+                System.out.println(" Invalid Product ID: " + id);
                 System.out.println("1. Re-enter\n2. Back to Menu");
 
                 int ch = getInt();
@@ -103,7 +103,7 @@ class App {
                 else return;
             }
 
-            // ✅ VALID ID
+           
             System.out.println("Product Found: " + p.name);
             System.out.print("Enter no. of Stock remove - ");
             int qty = getInt();
@@ -113,7 +113,7 @@ class App {
         }
     }
 
-    // 🔥 VALUE
+ 
     void value() {
 
         System.out.println("1.FIFO 2.LIFO");
