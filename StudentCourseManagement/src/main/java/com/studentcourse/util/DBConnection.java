@@ -10,9 +10,15 @@ import java.sql.SQLException;
  */
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/student_course_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "@Suy3103";
+    // Default local values
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/student_course_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String DEFAULT_USER = "root";
+    private static final String DEFAULT_PASS = "@Suy3103";
+
+    // Cloud DB (Render/Aiven) Environment Variables
+    private static final String DB_URL = System.getenv("DB_URL") != null ? System.getenv("DB_URL") : DEFAULT_URL;
+    private static final String DB_USER = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : DEFAULT_USER;
+    private static final String DB_PASS = System.getenv("DB_PASS") != null ? System.getenv("DB_PASS") : DEFAULT_PASS;
 
     static {
         try {
@@ -31,7 +37,7 @@ public class DBConnection {
      * @throws SQLException if connection fails
      */
     public static Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
         return connection;
     }
 }
