@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Main -->
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title" id="headerTitle">Dashboard</div>
+            <div class="header-subtitle" id="headerSubtitle">Welcome back</div>
+          </div>
+        </div>
+        <div class="header-right">
+          <span style="font-size:13px;color:var(--text-muted);" id="headerRole"></span>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Stats Cards -->
+        <div class="stats-grid stagger" id="statsGrid"></div>
+
+        <!-- Charts Row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;" id="chartsRow">
+          <div class="glass-card">
+            <div class="glass-card-header">
+              <div class="glass-card-title" id="chart1Title">Chart</div>
+            </div>
+            <div id="chart1"></div>
+          </div>
+          <div class="glass-card">
+            <div class="glass-card-header">
+              <div class="glass-card-title" id="chart2Title">Chart</div>
+            </div>
+            <div id="chart2"></div>
+          </div>
+        </div>
+
+        <!-- Recent Table -->
+        <div class="glass-card">
+          <div class="glass-card-header">
+            <div class="glass-card-title" id="recentTableTitle">Recent Activity</div>
+          </div>
+          <div class="table-container" id="recentTableContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js?v=1"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dashboard.js?v=1"></script>
+</body>
+</html>

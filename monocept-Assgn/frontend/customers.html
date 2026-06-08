@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title" id="pageTitle">Customers</div>
+            <div class="header-subtitle" id="pageSubtitle">Manage customer profiles</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Customer profile for CUSTOMER role -->
+        <div id="customerProfileSection" style="display:none;">
+          <div class="page-header">
+            <div class="page-header-left">
+              <h1>My Profile</h1>
+              <p>Manage your customer profile details</p>
+            </div>
+            <button class="btn btn-primary" id="editProfileBtn" onclick="openProfileModal()">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+              Update Profile
+            </button>
+          </div>
+          <div class="glass-card" id="profileCard"></div>
+        </div>
+
+        <!-- Customer list for ADMIN/AGENT role -->
+        <div id="customerListSection" style="display:none;">
+          <div class="page-header">
+            <div class="page-header-left">
+              <h1>Customers</h1>
+              <p>View all registered customers</p>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="table-container" id="tableContainer"></div>
+            <div id="paginationContainer"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- View Customer Modal -->
+  <div class="modal-overlay" id="viewCustomerModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div class="modal-title">Customer Details</div>
+        <button class="modal-close" onclick="closeModal('viewCustomerModal')">✕</button>
+      </div>
+      <div class="modal-body" id="customerDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- Edit/Create Profile Modal (for CUSTOMER) -->
+  <div class="modal-overlay" id="editProfileModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div class="modal-title" id="profileModalTitle">Update Profile</div>
+        <button class="modal-close" onclick="closeModal('editProfileModal')">✕</button>
+      </div>
+      <form id="profileForm" novalidate>
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="profDob">Date of Birth</label>
+              <input type="date" id="profDob" class="form-input" required>
+              <div class="form-error" id="profDobError"></div>
+            </div>
+            <div class="form-group">
+              <label for="profPincode">Pin Code</label>
+              <input type="text" id="profPincode" class="form-input" placeholder="Pin code" maxlength="10" required>
+              <div class="form-error" id="profPincodeError"></div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="profCity">City</label>
+              <input type="text" id="profCity" class="form-input" placeholder="City" required>
+              <div class="form-error" id="profCityError"></div>
+            </div>
+            <div class="form-group">
+              <label for="profState">State</label>
+              <input type="text" id="profState" class="form-input" placeholder="State" required>
+              <div class="form-error" id="profStateError"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="profAddress">Address</label>
+            <textarea id="profAddress" class="form-input" placeholder="Full residential address" required></textarea>
+            <div class="form-error" id="profAddressError"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="profNominee">Nominee Name</label>
+              <input type="text" id="profNominee" class="form-input" placeholder="Nominee full name" required>
+              <div class="form-error" id="profNomineeError"></div>
+            </div>
+            <div class="form-group">
+              <label for="profNomineeRelation">Nominee Relationship</label>
+              <input type="text" id="profNomineeRelation" class="form-input" placeholder="e.g. Spouse, Mother, Son" required>
+              <div class="form-error" id="profNomineeRelationError"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editProfileModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/customers.js"></script>
+</body>
+</html>

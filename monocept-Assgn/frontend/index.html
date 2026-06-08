@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:white;margin:0 auto 16px;">IP</div>
+        <h1>InsurePolicy</h1>
+        <p>Sign in to your account</p>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+          <div class="form-error" id="emailError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+          <div class="form-error" id="passwordError"></div>
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
+          Sign In
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-muted);">
+        Don't have an account? <a href="register.html" style="color:var(--accent-indigo);text-decoration:none;font-weight:500;">Register here</a>
+      </p>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    // If already logged in, redirect
+    if (localStorage.getItem('token')) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearAllErrors(form);
+
+      let valid = true;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!validateRequired(email)) {
+        showFieldError(emailInput, document.getElementById('emailError'), 'Email is required');
+        valid = false;
+      } else if (!validateEmail(email)) {
+        showFieldError(emailInput, document.getElementById('emailError'), 'Enter a valid email');
+        valid = false;
+      }
+
+      if (!validateRequired(password)) {
+        showFieldError(passwordInput, document.getElementById('passwordError'), 'Password is required');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      setButtonLoading(loginBtn, true);
+
+      try {
+        const data = await apiLogin(email, password);
+        
+        // Store auth data — handle various API response shapes
+        const token = data.token || data.jwt || data.accessToken;
+        const role = data.role || data.userRole || '';
+        const fullName = data.fullName || data.name || email.split('@')[0];
+
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('email', email);
+          localStorage.setItem('role', role);
+          localStorage.setItem('fullName', fullName);
+          if (data.userId) localStorage.setItem('userId', data.userId);
+          
+          showToast('Login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        } else {
+          throw new Error('No token received from server');
+        }
+      } catch (err) {
+        showToast(err.message || 'Login failed. Please check your credentials.', 'error');
+        setButtonLoading(loginBtn, false);
+      }
+    });
+
+    // Clear field errors on input
+    emailInput.addEventListener('input', () => clearFieldError(emailInput, document.getElementById('emailError')));
+    passwordInput.addEventListener('input', () => clearFieldError(passwordInput, document.getElementById('passwordError')));
+  </script>
+</body>
+</html>

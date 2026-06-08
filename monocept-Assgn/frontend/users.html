@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title">User Management</div>
+            <div class="header-subtitle">Manage system users and agents</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Users</h1>
+            <p>View and manage all system users</p>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('createAgentModal')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Create Agent
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select class="filter-input" id="filterRole" onchange="loadUsers()">
+            <option value="">All Roles</option>
+            <option value="ADMIN">Admin</option>
+            <option value="AGENT">Agent</option>
+            <option value="CUSTOMER">Customer</option>
+          </select>
+          <select class="filter-input" id="filterActive" onchange="loadUsers()">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="glass-card">
+          <div class="table-container" id="tableContainer"></div>
+          <div id="paginationContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Agent Modal -->
+  <div class="modal-overlay" id="createAgentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Create Agent</div>
+        <button class="modal-close" onclick="closeModal('createAgentModal')">✕</button>
+      </div>
+      <form id="createAgentForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="agentName">Full Name</label>
+            <input type="text" id="agentName" class="form-input" placeholder="Agent's full name" required>
+            <div class="form-error" id="agentNameError"></div>
+          </div>
+          <div class="form-group">
+            <label for="agentEmail">Email</label>
+            <input type="email" id="agentEmail" class="form-input" placeholder="agent@example.com" required>
+            <div class="form-error" id="agentEmailError"></div>
+          </div>
+          <div class="form-group">
+            <label for="agentPassword">Password</label>
+            <input type="password" id="agentPassword" class="form-input" placeholder="Min 6 characters" required>
+            <div class="form-error" id="agentPasswordError"></div>
+          </div>
+          <div class="form-group">
+            <label for="agentMobile">Mobile Number</label>
+            <input type="tel" id="agentMobile" class="form-input" placeholder="10-digit number" maxlength="10" required>
+            <div class="form-error" id="agentMobileError"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('createAgentModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="createAgentBtn">Create Agent</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js?v=1"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/users.js?v=1"></script>
+</body>
+</html>

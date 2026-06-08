@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title">Product Management</div>
+            <div class="header-subtitle">Browse and manage insurance products</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Products</h1>
+            <p>Various categories of insurance coverage plans</p>
+          </div>
+          <button class="btn btn-primary" id="createProductBtn" style="display:none;" onclick="openCreateProductModal()">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Create Product
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select class="filter-input" id="filterProductType" onchange="loadProducts()">
+            <option value="">All Types</option>
+            <option value="HEALTH">Health</option>
+            <option value="MOTOR">Motor</option>
+            <option value="LIFE">Life</option>
+            <option value="TRAVEL">Travel</option>
+          </select>
+          <select class="filter-input" id="filterActive" onchange="loadProducts()">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+
+        <!-- Grid/Table Container -->
+        <div class="glass-card">
+          <div class="table-container" id="tableContainer"></div>
+          <div id="paginationContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Product Modal (Create/Edit) -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Create Product</div>
+        <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+      </div>
+      <form id="productForm" novalidate>
+        <input type="hidden" id="productId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" class="form-input" placeholder="e.g. Life Term Plus" required>
+            <div class="form-error" id="productNameError"></div>
+          </div>
+          <div class="form-group">
+            <label for="productType">Product Type</label>
+            <select id="productType" class="form-input" required>
+              <option value="">Select Type</option>
+              <option value="HEALTH">Health</option>
+              <option value="MOTOR">Motor</option>
+              <option value="LIFE">Life</option>
+              <option value="TRAVEL">Travel</option>
+            </select>
+            <div class="form-error" id="productTypeError"></div>
+          </div>
+          <div class="form-group">
+            <label for="productDescription">Description</label>
+            <textarea id="productDescription" class="form-input" placeholder="Product description..." required></textarea>
+            <div class="form-error" id="productDescriptionError"></div>
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:12px;">
+            <input type="checkbox" id="productActive" class="form-checkbox" style="width:18px; height:18px; accent-color:var(--accent-indigo);" checked>
+            <label for="productActive" style="margin-bottom:0;">Is Active</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>

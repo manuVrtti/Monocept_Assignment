@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title">Plan Management</div>
+            <div class="header-subtitle">Browse and manage policy plans</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Policy Plans</h1>
+            <p>Define premium pricing and coverage terms for each product</p>
+          </div>
+          <button class="btn btn-primary" id="createPlanBtn" style="display:none;" onclick="openCreatePlanModal()">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Create Plan
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select class="filter-input" id="filterProduct" onchange="loadPlans()">
+            <option value="">All Products</option>
+          </select>
+          <select class="filter-input" id="filterActive" onchange="loadPlans()">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="glass-card">
+          <div class="table-container" id="tableContainer"></div>
+          <div id="paginationContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Plan Modal (Create/Edit) -->
+  <div class="modal-overlay" id="planModal">
+    <div class="modal" style="max-width: 550px;">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Create Plan</div>
+        <button class="modal-close" onclick="closeModal('planModal')">✕</button>
+      </div>
+      <form id="planForm" novalidate>
+        <input type="hidden" id="planId">
+        <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+          <div class="form-group">
+            <label for="planProduct">Insurance Product</label>
+            <select id="planProduct" class="form-input" required>
+              <option value="">Select Product</option>
+            </select>
+            <div class="form-error" id="planProductError"></div>
+          </div>
+          <div class="form-group">
+            <label for="planName">Plan Name</label>
+            <input type="text" id="planName" class="form-input" placeholder="e.g. Shield Premium" required>
+            <div class="form-error" id="planNameError"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="coverageAmount">Coverage Amount (INR)</label>
+              <input type="number" id="coverageAmount" class="form-input" placeholder="e.g. 500000" min="1" required>
+              <div class="form-error" id="coverageAmountError"></div>
+            </div>
+            <div class="form-group">
+              <label for="premiumAmount">Premium Amount (INR)</label>
+              <input type="number" id="premiumAmount" class="form-input" placeholder="e.g. 12000" min="1" required>
+              <div class="form-error" id="premiumAmountError"></div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="premiumType">Premium Type</label>
+              <select id="premiumType" class="form-input" required>
+                <option value="">Select Type</option>
+                <option value="ONE_TIME">One Time</option>
+                <option value="ANNUAL">Annual</option>
+              </select>
+              <div class="form-error" id="premiumTypeError"></div>
+            </div>
+            <div class="form-group">
+              <label for="planDuration">Duration (Years)</label>
+              <input type="number" id="planDuration" class="form-input" placeholder="e.g. 1" min="1" required>
+              <div class="form-error" id="planDurationError"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="termsAndConditions">Terms & Conditions</label>
+            <textarea id="termsAndConditions" class="form-input" placeholder="Plan rules, terms & conditions..." required></textarea>
+            <div class="form-error" id="termsAndConditionsError"></div>
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:12px;">
+            <input type="checkbox" id="planActive" class="form-checkbox" style="width:18px; height:18px; accent-color:var(--accent-indigo);" checked>
+            <label for="planActive" style="margin-bottom:0;">Is Active</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('planModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="savePlanBtn">Save Plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/plans.js"></script>
+</body>
+</html>

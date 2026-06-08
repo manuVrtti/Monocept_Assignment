@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Policies — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title">Policy Management</div>
+            <div class="header-subtitle">View and manage insurance policies</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1 id="pageHeadingTitle">Policies</h1>
+            <p id="pageHeadingSub">Track and process customer coverage agreements</p>
+          </div>
+          <div>
+            <!-- Purchase Button (Customer Only) -->
+            <button class="btn btn-primary" id="purchasePolicyBtn" style="display:none;" onclick="openPurchaseModal()">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+              Purchase Policy
+            </button>
+            <!-- Issue Button (Admin/Agent Only) -->
+            <button class="btn btn-primary" id="issuePolicyBtn" style="display:none;" onclick="openIssueModal()">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+              Issue Policy
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select class="filter-input" id="filterStatus" onchange="loadPolicies()">
+            <option value="">All Statuses</option>
+            <option value="PENDING_PAYMENT">Pending Payment</option>
+            <option value="ACTIVE">Active</option>
+            <option value="EXPIRED">Expired</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="glass-card">
+          <div class="table-container" id="tableContainer"></div>
+          <div id="paginationContainer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Purchase Modal (Customer Only) -->
+  <div class="modal-overlay" id="purchaseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Purchase Insurance Policy</div>
+        <button class="modal-close" onclick="closeModal('purchaseModal')">✕</button>
+      </div>
+      <form id="purchaseForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="purchasePlan">Select Policy Plan</label>
+            <select id="purchasePlan" class="form-input" required>
+              <option value="">Select a Plan</option>
+            </select>
+            <div class="form-error" id="purchasePlanError"></div>
+          </div>
+          <div class="form-group">
+            <label for="purchaseStartDate">Policy Start Date</label>
+            <input type="date" id="purchaseStartDate" class="form-input" required>
+            <div class="form-error" id="purchaseStartDateError"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('purchaseModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitPurchaseBtn">Purchase Plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Issue Modal (Admin/Agent Only) -->
+  <div class="modal-overlay" id="issueModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Issue Policy to Customer</div>
+        <button class="modal-close" onclick="closeModal('issueModal')">✕</button>
+      </div>
+      <form id="issueForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="issueCustomer">Select Customer</label>
+            <select id="issueCustomer" class="form-input" required>
+              <option value="">Select a Customer</option>
+            </select>
+            <div class="form-error" id="issueCustomerError"></div>
+          </div>
+          <div class="form-group">
+            <label for="issuePlan">Select Policy Plan</label>
+            <select id="issuePlan" class="form-input" required>
+              <option value="">Select a Plan</option>
+            </select>
+            <div class="form-error" id="issuePlanError"></div>
+          </div>
+          <div class="form-group">
+            <label for="issueStartDate">Policy Start Date</label>
+            <input type="date" id="issueStartDate" class="form-input" required>
+            <div class="form-error" id="issueStartDateError"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('issueModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitIssueBtn">Issue Policy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js?v=1"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/policies.js?v=1"></script>
+</body>
+</html>

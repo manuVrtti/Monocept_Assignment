@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claims — InsurePolicy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <div class="header-title">Claim Management</div>
+            <div class="header-subtitle">Process and track insurance claims</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1 id="pageHeadingTitle">Claims</h1>
+            <p id="pageHeadingSub">Process claims and check supporting documentation</p>
+          </div>
+          <button class="btn btn-primary" id="raiseClaimBtn" style="display:none;" onclick="openRaiseClaimModal()">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Raise Claim
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select class="filter-input" id="filterStatus" onchange="loadClaims()">
+            <option value="">All Statuses</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="RECOMMENDED_APPROVAL">Recommended Approval</option>
+            <option value="RECOMMENDED_REJECTION">Recommended Rejection</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
+
+        <!-- Table and Details Grid -->
+        <div style="display:grid; grid-template-columns:1fr; gap:24px;" id="claimsLayout">
+          <div class="glass-card">
+            <div class="table-container" id="tableContainer"></div>
+            <div id="paginationContainer"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Raise Claim Modal (Customer Only) -->
+  <div class="modal-overlay" id="claimModal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <div class="modal-title">Raise New Claim</div>
+        <button class="modal-close" onclick="closeModal('claimModal')">✕</button>
+      </div>
+      <form id="claimForm" novalidate>
+        <div class="modal-body" style="max-height:calc(100vh - 200px); overflow-y:auto;">
+          <div class="form-group">
+            <label for="claimPolicy">Select Policy</label>
+            <select id="claimPolicy" class="form-input" required>
+              <option value="">Select a Policy</option>
+            </select>
+            <div class="form-error" id="claimPolicyError"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label for="claimAmount">Claim Amount (INR)</label>
+              <input type="number" id="claimAmount" class="form-input" placeholder="e.g. 50000" min="0.01" step="0.01" required>
+              <div class="form-error" id="claimAmountError"></div>
+            </div>
+            <div class="form-group">
+              <label for="claimIncidentDate">Incident Date</label>
+              <input type="date" id="claimIncidentDate" class="form-input" required>
+              <div class="form-error" id="claimIncidentDateError"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="claimReason">Reason for Claim</label>
+            <textarea id="claimReason" class="form-input" placeholder="Provide detailed reasons for this claim..." required></textarea>
+            <div class="form-error" id="claimReasonError"></div>
+          </div>
+
+          <!-- Documents Segment -->
+          <div style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:16px;">
+            <div style="display:flex; justify-content:between; align-items:center; margin-bottom:12px;">
+              <span style="font-weight:600; font-size:14px; color:var(--text-primary);">Supporting Documents</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="addDocumentRow()">+ Add Document</button>
+            </div>
+            <div id="documentsListContainer" style="display:flex; flex-direction:column; gap:12px;">
+              <!-- Document rows added here dynamically -->
+            </div>
+            <div class="form-error" id="documentsError" style="display:block;"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('claimModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveClaimBtn">Submit Claim</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Agent Review Modal -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Agent Claim Review</div>
+        <button class="modal-close" onclick="closeModal('reviewModal')">✕</button>
+      </div>
+      <form id="reviewForm" novalidate>
+        <input type="hidden" id="reviewClaimId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="reviewStatus">Recommendation</label>
+            <select id="reviewStatus" class="form-input" required>
+              <option value="">Select Recommendation</option>
+              <option value="UNDER_REVIEW">Under Review</option>
+              <option value="RECOMMENDED_APPROVAL">Recommend Approval</option>
+              <option value="RECOMMENDED_REJECTION">Recommend Rejection</option>
+            </select>
+            <div class="form-error" id="reviewStatusError"></div>
+          </div>
+          <div class="form-group">
+            <label for="reviewRemarks">Remarks / Notes</label>
+            <textarea id="reviewRemarks" class="form-input" placeholder="Provide notes or findings..." required></textarea>
+            <div class="form-error" id="reviewRemarksError"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('reviewModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveReviewBtn">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Decision Modal -->
+  <div class="modal-overlay" id="decideModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Admin Final Decision</div>
+        <button class="modal-close" onclick="closeModal('decideModal')">✕</button>
+      </div>
+      <form id="decideForm" novalidate>
+        <input type="hidden" id="decideClaimId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="decideStatus">Decision</label>
+            <select id="decideStatus" class="form-input" required>
+              <option value="">Select Decision</option>
+              <option value="APPROVED">Approve Claim</option>
+              <option value="REJECTED">Reject Claim</option>
+            </select>
+            <div class="form-error" id="decideStatusError"></div>
+          </div>
+          <div class="form-group">
+            <label for="decideRemarks">Remarks / Explanation</label>
+            <textarea id="decideRemarks" class="form-input" placeholder="Provide details for approval or rejection..." required></textarea>
+            <div class="form-error" id="decideRemarksError"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('decideModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveDecideBtn">Submit Decision</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Claim Details Slide-over Drawer / Card template (rendered dynamically) -->
+  <div class="modal-overlay" id="detailsModal">
+    <div class="modal" style="max-width: 700px; width: 100%;">
+      <div class="modal-header">
+        <div class="modal-title">Claim Detail & History</div>
+        <button class="modal-close" onclick="closeModal('detailsModal')">✕</button>
+      </div>
+      <div class="modal-body" style="max-height: calc(100vh - 150px); overflow-y: auto;" id="detailsContent">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/claims.js"></script>
+</body>
+</html>
